@@ -40,4 +40,4 @@ jobs:
         prerelease: false
         title: ${{ env.app_version }}
         files: |
-          /home/runner/work/Hyphen.Tools.ProjectRenamer/Hyphen.Tools.ProjectRenamer/bin/Release/net6.0/publish/*.*
+          /home/runner/work/Hyphen.Tools.ProjectRenamer/Hyphen.Tools.ProjectRenamer/bin/Release/net6.0/publish/*.dll
