@@ -10,8 +10,3 @@
 
 <p align="middle">Hyphen.Tools.Renamer is a tool to rename all files, folders and contents quickly</p>
 <br>
-
-
-# Usage
-
-Run the program and fill the what is asked.
