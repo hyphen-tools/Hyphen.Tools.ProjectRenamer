@@ -1,0 +1,43 @@
+name: Build and publish
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get current time
+      uses: 1466587594/get-current-time@v2
+      id: current-time
+      with:
+        format: YYYYMMDD
+    - name: Use current time
+      env:
+        YEAR: "${{ steps.current-time.outputs.year }}"
+        MONTH: "${{ steps.current-time.outputs.month }}"
+        DAY: "${{ steps.current-time.outputs.day }}"
+        VERSION: ${{ steps.current-time.outputs.year }}.${{ steps.current-time.outputs.month }}.${{ steps.current-time.outputs.day }}.${{ github.run_number }}
+      run: echo "app_version=$VERSION" >> $GITHUB_ENV
+    - uses: actions/checkout@v2
+    - uses: nuget/setup-nuget@v1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Build
+      run: dotnet build -p:Version=${{ env.app_version }} --configuration Release
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: Publish
+      run: dotnet publish -p:Version=${{ env.app_version }} --configuration Release
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: false
+        title: ${{ env.app_version }}
+        files: |
+          /home/runner/work/Hyphen.Tools.ProjectRenamer/Hyphen.Tools.ProjectRenamer/bin/Release/net6.0/publish/*.*
